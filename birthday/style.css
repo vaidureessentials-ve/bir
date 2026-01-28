@@ -1,0 +1,124 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Poppins,sans-serif;
+}
+
+body{
+  background:linear-gradient(135deg,#ffecd2,#fcb69f);
+  overflow:hidden;
+}
+
+/* COMMON */
+.screen{
+  min-height:100vh;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  position:relative;
+  z-index:2;
+}
+.active{display:flex}
+
+.card{
+  background:transparent;
+  padding:50px 40px;
+  border-radius:22px;
+  max-width:520px;
+  width:90%;
+  box-shadow:0 30px 60px rgba(0,0,0,.18);
+  animation:pop 1s ease;
+}
+
+@keyframes pop{
+  from{transform:translateY(60px) scale(.9);opacity:0}
+  to{transform:translateY(0) scale(1);opacity:1}
+}
+
+h1{
+  font-family:Pacifico,cursive;
+  font-size:44px;
+  color:#ff6f61;
+}
+
+.big{
+  font-size:78px;
+  animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+  from{text-shadow:0 0 15px #ffc2d1}
+  to{text-shadow:0 0 40px #ff4d6d}
+}
+
+p{
+  color:#555;
+  line-height:1.7;
+  margin:18px 0;
+}
+
+img{
+  width:220px;
+  margin:20px auto;
+  display:block;
+}
+
+.btn{
+  padding:14px 34px;
+  background:#ff6f61;
+  color:#fff;
+  border-radius:30px;
+  text-decoration:none;
+  display:inline-block;
+}
+
+.btn:hover{background:#ff3d2e}
+
+/* FLOAT */
+.float{animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-15px)}}
+
+/* IMAGE FLOW */
+.flow{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+}
+.flow img{
+  position:absolute;
+  bottom:-160px;
+  opacity:.85;
+  animation:up linear infinite;
+}
+@keyframes up{to{transform:translateY(-150vh)}}
+
+/* CANVAS */
+canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+
+.white{color:#fff}
+
+/* MOBILE ≤ 480px */
+@media (max-width:480px){
+  .card{padding:26px 20px}
+  h1{font-size:26px}
+  .big{font-size:46px}
+  p{font-size:13px}
+  img{width:140px}
+  .btn{padding:11px 24px;font-size:13px}
+}
+
+/* LAPTOP ≥ 1024px */
+@media (min-width:1024px){
+  .card{max-width:560px;padding:60px 50px}
+  h1{font-size:46px}
+  .big{font-size:82px}
+  img{width:240px}
+}
