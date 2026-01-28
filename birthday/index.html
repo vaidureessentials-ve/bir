@@ -1,15 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Birthday Wishes</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Birthday Wishes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Pacifico&display=swap" rel="stylesheet">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css">
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Poppins,sans-serif;
+}
+
+body{
+  background:linear-gradient(135deg,#ffecd2,#fcb69f);
+  overflow:hidden;
+}
+
+/* ===== COMMON ===== */
+.screen{
+  min-height:100vh;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  position:relative;
+  z-index:2;
+}
+.active{display:flex}
+
+.card{
+  background:transparent;
+  padding:50px 40px;
+  border-radius:22px;
+  max-width:520px;
+  width:90%;
+  box-shadow:0 30px 60px rgba(0,0,0,.18);
+  animation:pop 1s ease;
+}
+
+@keyframes pop{
+  from{transform:translateY(60px) scale(.9);opacity:0}
+  to{transform:translateY(0) scale(1);opacity:1}
+}
+
+h1{
+  font-family:Pacifico,cursive;
+  font-size:44px;
+  color:#ff6f61;
+}
+
+.big{
+  font-size:78px;
+  animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+  from{text-shadow:0 0 15px #ffc2d1}
+  to{text-shadow:0 0 40px #ff4d6d}
+}
+
+p{
+  color:#555;
+  line-height:1.7;
+  margin:18px 0;
+}
+
+img{
+  width:220px;
+  margin:20px auto;
+  display:block;
+}
+
+.btn{
+  padding:14px 34px;
+  background:#ff6f61;
+  color:#fff;
+  border-radius:30px;
+  text-decoration:none;
+  display:inline-block;
+}
+
+.btn:hover{background:#ff3d2e}
+
+/* FLOAT */
+.float{animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-15px)}}
+
+/* IMAGE FLOW */
+.flow{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+}
+.flow img{
+  position:absolute;
+  bottom:-160px;
+  opacity:.85;
+  animation:up linear infinite;
+}
+@keyframes up{to{transform:translateY(-150vh)}}
+
+/* CANVAS */
+canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+
+.white{color:#fff}
+
+/* ===== MOBILE (≤ 480px) ===== */
+@media (max-width:480px){
+  .card{padding:26px 20px}
+  h1{font-size:26px}
+  .big{font-size:46px}
+  p{font-size:13px}
+  img{width:140px}
+  .btn{padding:11px 24px;font-size:13px}
+}
+
+/* ===== LAPTOP (≥ 1024px) ===== */
+@media (min-width:1024px){
+  .card{max-width:560px;padding:60px 50px}
+  h1{font-size:46px}
+  .big{font-size:82px}
+  img{width:240px}
+}
+</style>
 </head>
 
 <body>
@@ -54,11 +177,101 @@
   <div class="flow" id="flow"></div>
   <div class="card">
     <h1 class="big">🎉 Celebrate 🎉</h1>
-    <p class="white">May this year bring smiles and beautiful memories.</p>
+    <p class="white">May this year bring new hope,
+      endless smiles, and beautiful memories.</p>
   </div>
 </section>
 
-<!-- JS -->
-<script src="script.js"></script>
+<script>
+function nextTab(n){
+  document.getElementById("tab"+n).classList.remove("active");
+  document.getElementById("tab"+(n+1)).classList.add("active");
+  if(n===3) startFinal();
+}
+
+const images=[
+  "../image/img1.png",
+  "../image/img2.png",
+  "../image/img3.png",
+  "../image/img4.png",
+  "../image/img5.png"
+];
+
+function startFinal(){
+  document.getElementById("music").play();
+  imageFlow();
+  fireworks();
+}
+
+function imageFlow(){
+  const f=document.getElementById("flow");
+  for(let i=0;i<30;i++){
+    let im=document.createElement("img");
+    im.src=images[i%images.length];
+    im.style.left=Math.random()*100+"%";
+    im.style.width=60+Math.random()*70+"px";
+    im.style.animationDuration=16+Math.random()*14+"s";
+    im.style.animationDelay=Math.random()*8+"s";
+    f.appendChild(im);
+  }
+}
+
+/* CONFETTI */
+const cc=document.getElementById("confetti"),cx=cc.getContext("2d");
+cc.width=innerWidth;cc.height=innerHeight;
+const conf=[],colors=["#ff4d6d","#ffd166","#06d6a0","#4d96ff","#845ec2","#f15bb5"];
+
+class Conf{
+  constructor(){
+    this.x=Math.random()*cc.width;
+    this.y=Math.random()*cc.height-cc.height;
+    this.s=Math.random()*6+4;
+    this.v=Math.random()*2+2;
+    this.c=colors[Math.floor(Math.random()*colors.length)];
+  }
+  u(){this.y+=this.v;if(this.y>cc.height){this.y=-20;this.x=Math.random()*cc.width}}
+  d(){cx.fillStyle=this.c;cx.fillRect(this.x,this.y,this.s,this.s)}
+}
+for(let i=0;i<180;i++)conf.push(new Conf());
+
+(function loop(){
+  cx.clearRect(0,0,cc.width,cc.height);
+  conf.forEach(c=>{c.u();c.d()});
+  requestAnimationFrame(loop);
+})();
+
+/* FIREWORKS */
+const fw=document.getElementById("fireworks"),fx=fw.getContext("2d");
+fw.width=innerWidth;fw.height=innerHeight;
+let p=[];
+
+class Part{
+  constructor(x,y){
+    this.x=x;this.y=y;
+    this.vx=(Math.random()-.5)*5;
+    this.vy=(Math.random()-.5)*5;
+    this.life=90;
+    this.c=`hsl(${Math.random()*360},100%,60%)`;
+  }
+  u(){this.x+=this.vx;this.y+=this.vy;this.life--}
+  d(){fx.fillStyle=this.c;fx.beginPath();fx.arc(this.x,this.y,2,0,7);fx.fill()}
+}
+
+function boom(){
+  let x=Math.random()*fw.width,y=Math.random()*fw.height/2;
+  for(let i=0;i<80;i++)p.push(new Part(x,y));
+}
+
+function fireworks(){
+  (function loop(){
+    fx.fillStyle="rgba(0,0,0,.15)";
+    fx.fillRect(0,0,fw.width,fw.height);
+    if(Math.random()<.05)boom();
+    p=p.filter(o=>{o.u();o.d();return o.life>0});
+    requestAnimationFrame(loop);
+  })();
+}
+</script>
+
 </body>
 </html>
