@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Wishes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+
+body{
+  background:linear-gradient(135deg,#ffecd2,#fcb69f);
+  overflow:hidden;
+}
+
+/* ===== COMMON ===== */
+.screen{
+  min-height:100vh;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  position:relative;
+  z-index:2;
+}
+.active{display:flex}
+
+.card{
+  background:transparent;
+  padding:50px 40px;
+  border-radius:22px;
+  max-width:520px;
+  width:90%;
+  box-shadow:0 30px 60px rgba(0,0,0,.18);
+  animation:pop 1s ease;
+  cursor: pointer;
+}
+
+@keyframes pop{
+  from{transform:translateY(60px) scale(.9);opacity:0}
+  to{transform:translateY(0) scale(1);opacity:1}
+}
+
+h1{
+  font-family:Pacifico,cursive;
+  font-size:44px;
+  color:#ff6f61;
+}
+
+.big{
+  font-size:78px;
+  animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+  from{text-shadow:0 0 15px #ffc2d1}
+  to{text-shadow:0 0 40px #ff4d6d}
+}
+
+p{color:#555;line-height:1.7;margin:18px 0}
+
+img{
+  width:220px;
+  margin:20px auto;
+  display:block;
+}
+
+.btn{
+  padding:14px 34px;
+  background:#ff6f61;
+  color:#fff;
+  border-radius:30px;
+  text-decoration:none;
+  display:inline-block;
+  transition:.3s;
+}
+.btn:hover{background:#ff3d2e}
+
+/* FLOAT IMAGE */
+.float{animation:float 3s ease-in-out infinite}
+@keyframes float{
+  50%{transform:translateY(-15px)}
+}
+
+/* ===== IMAGE FLOW ===== */
+.flow{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+}
+.flow img{
+  position:absolute;
+  bottom:-160px;
+  opacity:.85;
+  animation:up linear infinite;
+}
+@keyframes up{
+  to{transform:translateY(-150vh)}
+}
+
+/* ===== CONFETTI ===== */
+canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+
+.white{
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="music" src="../music/birthday.mp3"></audio>
+
+<canvas id="confetti"></canvas>
+<canvas id="fireworks"></canvas>
+
+<!-- TAB 1 -->
+<section class="screen active" id="tab1">
+  <div class="card">
+    <h1>Warm Greetings</h1>
+    <img src="../image/img1.png">
+    <p>A gentle beginning to a very special celebration.</p>
+    <a class="btn" onclick="nextTab(1)">Next</a>
+  </div>
+</section>
+
+<!-- TAB 2 -->
+<section class="screen" id="tab2">
+  <div class="card">
+    <h1>With Respect</h1>
+    <img src="../image/img2.png" class="float">
+    <p>
+      May your life always be guided by peace,
+      success, and heartfelt happiness.
+    </p>
+    <a class="btn" onclick="nextTab(2)">Next</a>
+  </div>
+</section>
+
+<!-- TAB 3 -->
+<section class="screen" id="tab3">
+  <div class="card">
+    <h1 class="big">Happy Birthday</h1>
+    <img src="../image/img.png">
+    <p>
+      With best wishes for good health,
+      prosperity, and joyful moments always.
+    </p>
+    <a class="btn" onclick="nextTab(3)">Final Surprise</a>
+  </div>
+</section>
+
+<!-- TAB 4 FINAL -->
+<section class="screen" id="tab4">
+  <div class="flow" id="flow"></div>
+  <div class="card">
+    <h1 class="big">🎉 Celebrate 🎉</h1>
+    <p class="white">
+      May this year bring new hope,
+      endless smiles, and beautiful memories.
+    </p>
+  </div>
+</section>
+
+<script>
+/* ===== TAB CONTROL ===== */
+function nextTab(n){
+  document.getElementById("tab"+n).classList.remove("active");
+  document.getElementById("tab"+(n+1)).classList.add("active");
+  if(n===3) startFinal();
+}
+
+/* ===== FINAL EFFECTS ===== */
+const images=[
+  "../image/img1.png",
+  "../image/img2.png",
+  "../image/img3.png",
+  "../image/img4.png",
+  "../image/img5.png"
+];
+
+function startFinal(){
+  document.getElementById("music").play();
+  imageFlow();
+  fireworks();
+}
+
+/* IMAGE FLOW */
+function imageFlow(){
+  const f=document.getElementById("flow");
+  for(let i=0;i<30;i++){
+    let im=document.createElement("img");
+    im.src=images[i%images.length];
+    im.style.left=Math.random()*100+"%";
+    im.style.width=60+Math.random()*70+"px";
+    im.style.animationDuration=16+Math.random()*14+"s";
+    im.style.animationDelay=Math.random()*8+"s";
+    f.appendChild(im);
+  }
+}
+
+/* ===== CONTINUOUS CONFETTI ===== */
+const cc=document.getElementById("confetti"),cx=cc.getContext("2d");
+cc.width=innerWidth;cc.height=innerHeight;
+
+const conf=[];
+const colors=["#ff4d6d","#ffd166","#06d6a0","#4d96ff","#845ec2","#f15bb5"];
+
+class Conf{
+  constructor(){
+    this.x=Math.random()*cc.width;
+    this.y=Math.random()*cc.height-cc.height;
+    this.s=Math.random()*6+4;
+    this.v=Math.random()*2+2;
+    this.c=colors[Math.floor(Math.random()*colors.length)];
+    this.r=Math.random()*360;
+  }
+  u(){
+    this.y+=this.v;
+    if(this.y>cc.height){this.y=-20;this.x=Math.random()*cc.width}
+  }
+  d(){
+    cx.save();
+    cx.translate(this.x,this.y);
+    cx.rotate(this.r);
+    cx.fillStyle=this.c;
+    cx.fillRect(-this.s/2,-this.s/2,this.s,this.s);
+    cx.restore();
+  }
+}
+for(let i=0;i<180;i++)conf.push(new Conf());
+
+(function confettiLoop(){
+  cx.clearRect(0,0,cc.width,cc.height);
+  conf.forEach(c=>{c.u();c.d()});
+  requestAnimationFrame(confettiLoop);
+})();
+
+/* ===== FIREWORKS ===== */
+const fw=document.getElementById("fireworks"),fx=fw.getContext("2d");
+fw.width=innerWidth;fw.height=innerHeight;
+let p=[];
+
+class Part{
+  constructor(x,y){
+    this.x=x;this.y=y;
+    this.vx=(Math.random()-.5)*5;
+    this.vy=(Math.random()-.5)*5;
+    this.life=90;
+    this.c=`hsl(${Math.random()*360},100%,60%)`;
+  }
+  u(){this.x+=this.vx;this.y+=this.vy;this.life--}
+  d(){fx.fillStyle=this.c;fx.beginPath();fx.arc(this.x,this.y,2,0,7);fx.fill()}
+}
+
+function boom(){
+  let x=Math.random()*fw.width,y=Math.random()*fw.height/2;
+  for(let i=0;i<80;i++)p.push(new Part(x,y));
+}
+
+function fireworks(){
+  function loop(){
+    fx.fillStyle="rgba(0,0,0,.15)";
+    fx.fillRect(0,0,fw.width,fw.height);
+    if(Math.random()<.05)boom();
+    p=p.filter(o=>{o.u();o.d();return o.life>0});
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+</script>
+
+</body>
+</html>
